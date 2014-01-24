@@ -1,0 +1,17 @@
+{
+  "name": "NodeIrToy",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start":   "nodemon ./js/index.js",
+    "testdrive": "nodemon ./examples/testdrive.js"
+  },
+  "dependencies": {
+    "serialport": "~1.2.5",
+    "async": "~0.2.9"
+  },
+  "description": "Simple IrToy v2 driver with send and receive ir command capabilities",
+  "main": "./js/index.js",
+  "author": "Andrej Debeljak <andrejdebeljak@gmail.com>",
+  "license": "BSD-2-Clause"
+}

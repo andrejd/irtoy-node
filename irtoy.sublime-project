@@ -1,0 +1,23 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": "."
+		}
+	],
+    "settings":
+    {
+        "CoffeeScript":
+        {
+            "noWrapper": true,
+            "compileOnSave": true,
+            "compileDir": ".",
+            "compilePaths":
+            {
+                "./coffee": "../js",
+                "./coffee/lib": "../../js/lib"
+            }
+        }
+    }
+}

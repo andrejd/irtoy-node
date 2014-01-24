@@ -1,0 +1,14 @@
+# .nodemonignore file
+
+# Directories
+coffee/
+node_modules/
+.git/
+
+# Files
+*.sublime-project
+*.sublime-workspace
+*.json
+*.md
+
+
