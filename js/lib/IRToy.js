@@ -60,7 +60,6 @@ IRToy = (function(_super) {
   IRToy.prototype.onFindIrToy = function(serial_path) {
     var _this = this;
     if (serial_path != null) {
-      console.log("IR Toy found on " + serial_path);
       this.sp = new SerialPort(serial_path, {
         baudRate: 9600,
         buffersize: 512
@@ -78,8 +77,6 @@ IRToy = (function(_super) {
         return console.log('Serial port error!');
       });
       return this.sp.open();
-    } else {
-      return console.log("No IR Toy found!");
     }
   };
 
@@ -122,7 +119,6 @@ IRToy = (function(_super) {
 
   IRToy.prototype.transmit = function(ircode) {
     var parser, _i, _len, _ref, _results;
-    console.log(ircode);
     _ref = this.parsers;
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -189,7 +185,6 @@ IRToy = (function(_super) {
       for (_i = 0, _len = data.length; _i < _len; _i++) {
         ch = data[_i];
         if (ch === 67 || ch === 70) {
-          console.log("Transmition successfull!");
           _results.push(this.onOpen());
         } else {
           _results.push(void 0);
@@ -205,7 +200,7 @@ IRToy = (function(_super) {
       clearTimeout(this.timeOut);
     }
     if (data.length === 3 && data.toString('ascii') === "S01") {
-      console.log("Alles OK, lets roll ....");
+
     } else if (data.length === 2 && data.readUInt16BE(0) === 0xFFFF) {
       this.cleanUp();
     } else {

@@ -37,12 +37,12 @@ class IRToy extends EventEmitter
                 if port.pnpId == "usb-Dangerous_Prototypes_CDC_Test_00000001-if00"
                     @onFindIrToy port.comName
 
+        # TODO: inform consumers that no device was found
+
 
     onFindIrToy: (serial_path) ->
         if serial_path?
-            console.log "IR Toy found on #{serial_path}"
-
-
+            #console.log "IR Toy found on #{serial_path}"
 
             @sp = new SerialPort serial_path, {baudRate: 9600, buffersize: 512 }, false
 
@@ -54,8 +54,6 @@ class IRToy extends EventEmitter
 
             @sp.open()
 
-        else
-            console.log "No IR Toy found!"
 
 
     #public methods
@@ -63,7 +61,6 @@ class IRToy extends EventEmitter
         parser.on 'receive', @onReceive
         parser.on 'bad-data', () => @cleanUp(); @onOpen()
 
-        #remote.on 'transmit', @transmitCode
         @parsers.push parser
 
 
@@ -97,17 +94,11 @@ class IRToy extends EventEmitter
     # TRANSMITTING
 
     transmit: (ircode) =>
-        console.log ircode
-
         # first we need to find correct parser
         for parser in @parsers
             if parser.type == ircode.type
                 @transmitCode parser.generate ircode.code, ircode.address
                 break
-
-
-
-
 
     # TRANSMITTING IR COMMANDS
     transmitCode: (buffer) =>
@@ -160,14 +151,7 @@ class IRToy extends EventEmitter
         else
 
             for ch in data
-
-                #if ch == 62 then console.log  "Ignoring last handshake"
-
-                if ch in [67, 70]
-                    console.log "Transmition successfull!"
-                    @onOpen()
-
-
+                if ch in [67, 70] then @onOpen()
 
 
     # when data from IR TOy received, this handler is called
@@ -176,7 +160,7 @@ class IRToy extends EventEmitter
         if @timeOut? then clearTimeout @timeOut
 
         if data.length == 3 && data.toString('ascii') == "S01"
-            console.log "Alles OK, lets roll ...."
+            #console.log "Alles OK, lets roll ...."
 
         else if data.length == 2 && data.readUInt16BE(0) == 0xFFFF
             @cleanUp()
@@ -192,6 +176,7 @@ class IRToy extends EventEmitter
     parseData: (data) =>
 
         if @rBuff.length > 170 then @rBuff = new Buffer []
+
         @rBuff = Buffer.concat [@rBuff, data]
 
         #here we check if any of remotes recognise code
