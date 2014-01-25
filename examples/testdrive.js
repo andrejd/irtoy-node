@@ -7,7 +7,7 @@ NecParser = require('../js/index.js').NecParser;
 
 HandanParser = require('../js/index.js').HandanParser;
 
-toy = new IRToy('/dev/ttyACM0');
+toy = new IRToy();
 
 nec = new NecParser();
 

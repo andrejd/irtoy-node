@@ -9,27 +9,15 @@ delay = (ms, func) -> setTimeout func, ms
 
 class IRToy extends EventEmitter
 
-    constructor: (port) ->
-
-        @dataCallBack   =null
-
+    constructor: ->
+        @dataCallBack   = null
         @codeParsed     = false
-
         @transmited     = 0
-
         @timeOut        = null
-
-        # receive buffer
-        @rBuff          = new Buffer []
-
-        #transmit buffer
-        @tBuff          = new Buffer []
-
-        # array of parsers
-        @parsers        = new Array()
-
+        @rBuff          = new Buffer [] # receive buffer
+        @tBuff          = new Buffer [] #transmit buffer
+        @parsers        = new Array()   # array of parsers
         @findIRToy()
-
 
     findIRToy: =>
         list (err, ports) =>
@@ -39,24 +27,18 @@ class IRToy extends EventEmitter
 
         # TODO: inform consumers that no device was found
 
-
     onFindIrToy: (serial_path) ->
         if serial_path?
             #console.log "IR Toy found on #{serial_path}"
 
             @sp = new SerialPort serial_path, {baudRate: 9600, buffersize: 512 }, false
-
-
             @sp.on 'open', @onOpen
             @sp.on 'data', (data) => if @dataCallBack? then @dataCallBack data
-            @sp.on 'close', -> console.log 'Exiting application!'
-            @sp.on 'error', -> console.log 'Serial port error!'
+            #@sp.on 'close', -> console.log 'Exiting application!'
+            #@sp.on 'error', -> console.log 'Serial port error!'
 
             @sp.open()
 
-
-
-    #public methods
     registerParser:(parser) ->
         parser.on 'receive', @onReceive
         parser.on 'bad-data', () => @cleanUp(); @onOpen()
@@ -72,17 +54,14 @@ class IRToy extends EventEmitter
         that = @
 
         async.series [
-
             # Cancel transmit mode if IR Toy is in there
             (cb) ->
                 that.writeData [0xFF, 0xFF]
                 delay 25, -> cb null
-
             # Reset
             (cb) ->
                 that.writeData [0x00, 0x00, 0x00, 0x00, 0x00]
                 delay 20, -> cb null
-
             # Parser for received signals
             (cb) ->
                 that.writeData 'S', that.handleReceivedData
@@ -105,31 +84,24 @@ class IRToy extends EventEmitter
 
         @tBuff = buffer
         @transmited = 0
-
         that = @
 
         async.series [
-
             (cb) ->
                 that.writeData [0x00, 0x00, 0x00, 0x00, 0x00] # Reset
                 delay 20, -> cb null
-
             (cb) ->
                 that.writeData 'S' # Reset
                 delay 20, -> cb null, Date.now()
-
             (cb) ->
                 that.writeData [0x26] # Enable transmit handshake
                 delay 10, -> cb null, Date.now()
-
             (cb) ->
                 that.writeData [0x25] # Enable transmit notify on complete
                 delay 10, -> cb null, Date.now()
-
             (cb) ->
                 that.writeData [0x24] # Enable transmit byte count report
                 delay 10, -> cb null, Date.now()
-
             # Enable transmit byte count report
             (cb) ->
                 that.writeData [0x03], that.transmitHandshakeData

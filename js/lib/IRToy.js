@@ -19,7 +19,7 @@ delay = function(ms, func) {
 IRToy = (function(_super) {
   __extends(IRToy, _super);
 
-  function IRToy(port) {
+  function IRToy() {
     this.writeData = __bind(this.writeData, this);
     this.cleanUp = __bind(this.cleanUp, this);
     this.parseData = __bind(this.parseData, this);
@@ -69,12 +69,6 @@ IRToy = (function(_super) {
         if (_this.dataCallBack != null) {
           return _this.dataCallBack(data);
         }
-      });
-      this.sp.on('close', function() {
-        return console.log('Exiting application!');
-      });
-      this.sp.on('error', function() {
-        return console.log('Serial port error!');
       });
       return this.sp.open();
     }
